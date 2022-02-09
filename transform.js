@@ -45,7 +45,7 @@ fs.readFile('input', 'utf8', (err, deliveryApiRichTextValue) => {
   for (let i = foundFigures.length - 1, figure; (figure = foundFigures[i]); i--) {
 
     // remove the data-image-id & alt attributes
-    const cleanFigure = figure[0].replaceAll(/(?:data-image-id=)[^>\s]+|(?:alt=)[^>\s]+/gi, "");
+    const cleanFigure = figure[0].replaceAll(/(?:data-image-id=)[^>\s]+|(?:alt=\\")[^"]+"/gi, "");
     deliveryApiRichTextValue = deliveryApiRichTextValue.replaceAt(figure.index, figure[0].length, cleanFigure);
   }
 
@@ -98,7 +98,7 @@ fs.readFile('input', 'utf8', (err, deliveryApiRichTextValue) => {
     }
     // link to URL -> remove target, rel
     else {
-      const cleanExternalLink = link[0].replaceAll(/(?:target=)[^>\s]+|(?:rel=)[^>]+/gi, "");
+      const cleanExternalLink = link[0].replaceAll(/(?:target=)[^>\s]+|(?:rel=\\")[^"]+"/gi, "");
       managementApiInput = managementApiInput.replaceAt(link.index, link[0].length, cleanExternalLink);
     }
   }
