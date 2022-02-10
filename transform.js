@@ -22,7 +22,7 @@ fs.readFile('input', 'utf8', (err, deliveryApiRichTextValue) => {
   // (from https://docs.kontent.ai/reference/delivery-api#section/Rich-text-element/images-single-object)
   
   // This will find all of figures that contain data-asset-id property anywhere in the tag (or children tags)
-  const foundFigures = [...deliveryApiRichTextValue.matchAll(/(?:<figure)[^>]*?(?:data-asset-id=)[\s|\S]*?(?:<\/figure>)/gi)];
+  const foundFigures = [...deliveryApiRichTextValue.matchAll(/(?:<figure)[^>]*?(?: data-asset-id=)[\s|\S]*?(?:<\/figure>)/gi)];
 
   // The output will be an array of items like this 
   // (from the delivery API docs https://docs.kontent.ai/reference/delivery-api#section/Rich-text-element/images-single-object)
@@ -45,7 +45,7 @@ fs.readFile('input', 'utf8', (err, deliveryApiRichTextValue) => {
   for (let i = foundFigures.length - 1, figure; (figure = foundFigures[i]); i--) {
 
     // remove the data-image-id & alt attributes
-    const cleanFigure = figure[0].replaceAll(/(?:data-image-id=)[^>\s]+|(?:alt=\\")[^"]+"/gi, "");
+    const cleanFigure = figure[0].replaceAll(/(?: data-image-id=)[^>\s]+|(?: alt=\\")[^"]+"/gi, "");
     deliveryApiRichTextValue = deliveryApiRichTextValue.replaceAt(figure.index, figure[0].length, cleanFigure);
   }
 
@@ -92,13 +92,13 @@ fs.readFile('input', 'utf8', (err, deliveryApiRichTextValue) => {
     const linkString = link[0];
 
     // link to asset, or link to email, or link to item -> remove href
-    if ((linkString.match(/(?:data-asset-id)/)) || (linkString.match(/(?:data-email-address)/)) || (linkString.match(/(?:data-item-id)/))) {
-      const cleanLink = link[0].replaceAll(/(?:href=)[^>\s]+/gi, "");
+    if ((linkString.match(/(?: data-asset-id)/)) || (linkString.match(/(?: data-email-address)/)) || (linkString.match(/(?: data-item-id)/))) {
+      const cleanLink = link[0].replaceAll(/(?: href=)[^>\s]+/gi, "");
       managementApiInput = managementApiInput.replaceAt(link.index, link[0].length, cleanLink);
     }
     // link to URL -> remove target, rel
     else {
-      const cleanExternalLink = link[0].replaceAll(/(?:target=)[^>\s]+|(?:rel=\\")[^"]+"/gi, "");
+      const cleanExternalLink = link[0].replaceAll(/(?: target=)[^>\s]+|(?: rel=\\")[^"]+"/gi, "");
       managementApiInput = managementApiInput.replaceAt(link.index, link[0].length, cleanExternalLink);
     }
   }
